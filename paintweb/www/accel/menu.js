@@ -18,6 +18,10 @@ function onClickCtrl(key) {
     }
 }
 
+/**
+ * 加载控制器按钮
+ *
+ */
 function installControllers() {
     document.getElementById("menu").innerHTML = `
     <input type="button" id="PathCreator" value="Create Path" onclick="onClickCtrl('PathCreator')">
@@ -27,8 +31,13 @@ function installControllers() {
     <input type="button" id="EllipseCreator" value="Create Ellipse" onclick="onClickCtrl('EllipseCreator')">
     <input type="button" id="CircleCreator" value="Create Circle" onclick="onClickCtrl('CircleCreator')">`
 
-    onViewAdded(function(view) {
+    // 注册视图加载时需要调用的函数
+    onViewAdded(function (view) {
+        // 激活图形选择控制器(可以在界面上拖动图形)
         view.invokeController("ShapeSelector")
+
+        // 注册控制器重置事件:当重置时,取消图形的选中状态,并且激活选择控制器
+        // 本质上是消除状态,将界面重置到刚加载的样子
         view.onControllerReset = function() {
             unselectElementById(view.currentKey)
             view.invokeController("ShapeSelector")
@@ -77,6 +86,9 @@ function onSelectionChanged(old) {
     }
 }
 
+/**
+ * 加载属性选择器
+ */
 function installPropSelectors() {
     document.getElementById("menu").insertAdjacentHTML("afterend", `<br><div id="properties">
     <label for="lineWidth">LineWidth: </label>

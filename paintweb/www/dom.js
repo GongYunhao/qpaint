@@ -11,12 +11,12 @@ function hitLine(pt, pt1, pt2, width) {
     }
     let dy = pt2.y - pt1.y
     let dx = pt2.x - pt1.x
-    let d12 = Math.sqrt(dx*dx + dy*dy)
+    let d12 = Math.sqrt(dx * dx + dy * dy)
     if (d12 < 0.1) {
         return false
     }
-    let d = Math.abs(dy*pt.x - dx*pt.y + pt2.x*pt1.y - pt1.x*pt2.y) / d12 - 2
-    return width >= d*2
+    let d = Math.abs(dy * pt.x - dx * pt.y + pt2.x * pt1.y - pt1.x * pt2.y) / d12 - 2
+    return width >= d * 2
 }
 
 function hitRect(pt, r) {
@@ -44,7 +44,7 @@ function normalizeRect(rect) {
         y = rect.pt2.y
         height = -height
     }
-    return {x: x, y: y, width: width, height: height}
+    return { x: x, y: y, width: width, height: height }
 }
 
 // ----------------------------------------------------------
@@ -70,7 +70,7 @@ function deleteItem(array, item) {
 var _eatNextHashChangeEvent = false
 
 function window_onhashchange(handle) {
-    window.onhashchange = function(event) {
+    window.onhashchange = function (event) {
         if (_eatNextHashChangeEvent) {
             _eatNextHashChangeEvent = false
             return
@@ -178,14 +178,14 @@ var http = new XMLHttpRequest()
 
 function callAsync(method, url, headers, body, onOK) {
     let timeout = 1000
-    let doFunc = function() {
+    let doFunc = function () {
         http.open(method, url)
         for (let i in headers) {
             let header = headers[i]
             http.setRequestHeader(header.key, header.value)
         }
         http.setRequestHeader("Authorization", "QPaintStub 1")
-        http.onreadystatechange = function() {
+        http.onreadystatechange = function () {
             if (http.readyState != 4) {
                 return
             }
@@ -232,7 +232,7 @@ class QSynchronizer {
         let baseVerKey = "base:" + doc.displayID
         let timeout = 1000
         let syncer = this
-        let syncFunc = function() {
+        let syncFunc = function () {
             if (!syncer.dirty) {
                 syncer.started = false
                 return
@@ -243,7 +243,7 @@ class QSynchronizer {
             http.open("POST", syncUrl)
             http.setRequestHeader("Content-Type", "application/json")
             http.setRequestHeader("Authorization", "QPaintStub 1")
-            http.onreadystatechange = function() {
+            http.onreadystatechange = function () {
                 if (http.readyState != 4) {
                     return
                 }
@@ -267,14 +267,14 @@ class QSynchronizer {
 // ----------------------------------------------------------
 
 function loadDrawing(localID) {
-    let val = localStorage.getItem("dg:"+localID)
+    let val = localStorage.getItem("dg:" + localID)
     return JSON.parse(val)
 }
 
 function documentChanged(doc, noSync) {
     if (doc.localID != "") {
         let val = JSON.stringify(doc)
-        localStorage_setItem("dg:"+doc.localID, val)
+        localStorage_setItem("dg:" + doc.localID, val)
         noSync = noSync || false
         if (!noSync) {
             doc.syncer.fireChanged(doc)
@@ -283,7 +283,7 @@ function documentChanged(doc, noSync) {
 }
 
 function loadShape(parent, id) {
-    let val = localStorage.getItem(parent.localID+":"+id)
+    let val = localStorage.getItem(parent.localID + ":" + id)
     let o = JSON.parse(val)
     if (o == null) {
         return null
@@ -295,7 +295,7 @@ function shapeChanged(parent, shape, noSync) {
     if (shape.id != "") {
         shape.ver = parent.ver
         let val = JSON.stringify(shape)
-        localStorage_setItem(parent.localID+":"+shape.id, val)
+        localStorage_setItem(parent.localID + ":" + shape.id, val)
         noSync = noSync || false
         if (!noSync) {
             parent.syncer.fireChanged(parent)
@@ -359,9 +359,9 @@ class QLine {
     }
     hitTest(pt) {
         if (hitLine(pt, this.pt1, this.pt2, this.style.lineWidth)) {
-            return {hitCode: 1, hitShape: this}
+            return { hitCode: 1, hitShape: this }
         }
-        return {hitCode: 0, hitShape: null}
+        return { hitCode: 0, hitShape: null }
     }
     move(parent, dx, dy) {
         this.pt1.x += dx
@@ -386,7 +386,7 @@ class QLine {
     }
 }
 
-qshapes.register("line", function(json) {
+qshapes.register("line", function (json) {
     return new QLine(json)
 })
 
@@ -428,13 +428,13 @@ class QRect {
     }
 
     bound() {
-        return {x: this.x, y: this.y, width: this.width, height: this.height}
+        return { x: this.x, y: this.y, width: this.width, height: this.height }
     }
     hitTest(pt) {
         if (hitRect(pt, this)) {
-            return {hitCode: 1, hitShape: this}
+            return { hitCode: 1, hitShape: this }
         }
-        return {hitCode: 0, hitShape: null}
+        return { hitCode: 0, hitShape: null }
     }
     move(parent, dx, dy) {
         this.x += dx
@@ -457,7 +457,7 @@ class QRect {
     }
 }
 
-qshapes.register("rect", function(json) {
+qshapes.register("rect", function (json) {
     return new QRect(json)
 })
 
@@ -511,10 +511,10 @@ class QEllipse {
         let dy = pt.y - this.y
         let a = this.radiusX
         let b = this.radiusY
-        if (dx*dx/a/a + dy*dy/b/b <= 1) {
-            return {hitCode: 1, hitShape: this}
+        if (dx * dx / a / a + dy * dy / b / b <= 1) {
+            return { hitCode: 1, hitShape: this }
         }
-        return {hitCode: 0, hitShape: null}
+        return { hitCode: 0, hitShape: null }
     }
     move(parent, dx, dy) {
         this.x += dx
@@ -537,7 +537,7 @@ class QEllipse {
     }
 }
 
-qshapes.register("ellipse", function(json) {
+qshapes.register("ellipse", function (json) {
     return new QEllipse(json)
 })
 
@@ -595,8 +595,8 @@ class QPath {
             } else if (ty > y2) {
                 y2 = ty
             }
-        }        
-        return {x: x1, y: y1, width: x2 - x1, height: y2 - y1}
+        }
+        return { x: x1, y: y1, width: x2 - x1, height: y2 - y1 }
     }
     hitTest(pt) {
         if (hitRect(pt, this.bound())) {
@@ -605,13 +605,13 @@ class QPath {
             if (n > 1) {
                 let lineWidth = this.style.lineWidth
                 for (let i = 1; i < n; i++) {
-                    if (hitLine(pt, points[i-1], points[i], lineWidth)) {
-                        return {hitCode: 1, hitShape: this}
+                    if (hitLine(pt, points[i - 1], points[i], lineWidth)) {
+                        return { hitCode: 1, hitShape: this }
                     }
                 }
             }
         }
-        return {hitCode: 0, hitShape: null}
+        return { hitCode: 0, hitShape: null }
     }
     move(parent, dx, dy) {
         let points = this.points
@@ -647,12 +647,17 @@ class QPath {
     }
 }
 
-qshapes.register("path", function(json) {
+qshapes.register("path", function (json) {
     return new QPath(json)
 })
 
 // ----------------------------------------------------------
 
+/**
+ * 浏览器端的 Model 层根节点
+ *
+ * @class QPaintDoc
+ */
 class QPaintDoc {
     constructor() {
         this._reset()
@@ -731,10 +736,10 @@ class QPaintDoc {
             this.localID = _makeLocalDrawingID()
         }
         let doc = this
-        callAsync("GET", "/api/drawings/" + displayID, [], null, function() {
+        callAsync("GET", "/api/drawings/" + displayID, [], null, function () {
             let o = JSON.parse(http.responseText)
             removeCache(localID)
-            doc.syncer.noflush(function() {
+            doc.syncer.noflush(function () {
                 doc._loadRemoteDrawing(o)
             })
             localStorage_setItem(localIDKey, doc.localID)
@@ -746,7 +751,7 @@ class QPaintDoc {
     }
     _newDoc() {
         let doc = this
-        callAsync("POST", "/api/drawings", [], null, function() {
+        callAsync("POST", "/api/drawings", [], null, function () {
             let o = JSON.parse(http.responseText)
             doc.displayID = o.id
             let localIDKey = "local:" + doc.displayID
@@ -824,6 +829,12 @@ class QPaintDoc {
         this.init()
     }
 
+    /**
+     * 添加图形
+     *
+     * @param {*} shape 可以是 QLine，QRect，QEllipse，QPath 等等
+     * @memberof QPaintDoc
+     */
     addShape(shape) {
         if (shape != null) {
             this._shapes.push(this._initShape(shape))
@@ -838,15 +849,23 @@ class QPaintDoc {
     hitTest(pt) {
         let shapes = this._shapes
         let n = shapes.length
-        for (let i = n-1; i >= 0; i--) {
+        for (let i = n - 1; i >= 0; i--) {
             let ret = shapes[i].hitTest(pt)
             if (ret.hitCode > 0) {
                 return ret
             }
         }
-        return {hitCode: 0, hitShape: null}
+        return { hitCode: 0, hitShape: null }
     }
 
+    /**
+     * 绘制图形
+     * 理论上应让view层负责绘制,但是需要model层暴露足够多的信息
+     * 那相比之下,还是让model层与gdi/canvas耦合,自己负责绘制更好:gdi/canvas接口本身更为稳定,后期维护成本较低
+     *
+     * @param {*} ctx canvas绘画上下文
+     * @memberof QPaintDoc
+     */
     onpaint(ctx) {
         let shapes = this._shapes
         for (let i in shapes) {
